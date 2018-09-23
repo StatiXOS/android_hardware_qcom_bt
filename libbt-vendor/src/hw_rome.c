@@ -34,26 +34,28 @@ extern "C" {
 
 #define LOG_TAG "bt_vendor"
 
-#include <sys/socket.h>
-#include <utils/Log.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <signal.h>
-#include <time.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <cutils/properties.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "bt_hci_bdroid.h"
 #include "bt_vendor_qcom.h"
 #include "hci_uart.h"
 #include "hw_rome.h"
+
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <time.h>
+#include <unistd.h>
+
+#include <cutils/properties.h>
+#include <utils/Log.h>
 
 #define BT_VERSION_FILEPATH "/data/misc/bluedroid/bt_fw_version.txt"
 
@@ -156,30 +158,30 @@ int get_vs_hci_event(unsigned char *rsp)
         {
             case EDL_PATCH_VER_RES_EVT:
             case EDL_APP_VER_RES_EVT:
-                ALOGI("\t Current Product ID\t\t: 0x%08x",
-                    productid = (unsigned int)(rsp[PATCH_PROD_ID_OFFSET +3] << 24 |
-                                        rsp[PATCH_PROD_ID_OFFSET+2] << 16 |
-                                        rsp[PATCH_PROD_ID_OFFSET+1] << 8 |
-                                        rsp[PATCH_PROD_ID_OFFSET]  ));
+                productid = (unsigned int)(rsp[PATCH_PROD_ID_OFFSET +3] << 24 |
+                                    rsp[PATCH_PROD_ID_OFFSET+2] << 16 |
+                                    rsp[PATCH_PROD_ID_OFFSET+1] << 8 |
+                                    rsp[PATCH_PROD_ID_OFFSET]  );
+                ALOGI("\t Current Product ID\t\t: 0x%08x", productid);
 
                 /* Patch Version indicates FW patch version */
-                ALOGI("\t Current Patch Version\t\t: 0x%04x",
-                    (patchversion = (unsigned short)(rsp[PATCH_PATCH_VER_OFFSET + 1] << 8 |
-                                            rsp[PATCH_PATCH_VER_OFFSET] )));
+                patchversion = (unsigned short)(rsp[PATCH_PATCH_VER_OFFSET + 1] << 8 |
+                                       rsp[PATCH_PATCH_VER_OFFSET] );
+                ALOGI("\t Current Patch Version\t\t: 0x%04x", patchversion);
 
                 /* ROM Build Version indicates ROM build version like 1.0/1.1/2.0 */
-                ALOGI("\t Current ROM Build Version\t: 0x%04x", buildversion =
-                    (int)(rsp[PATCH_ROM_BUILD_VER_OFFSET + 1] << 8 |
-                                            rsp[PATCH_ROM_BUILD_VER_OFFSET] ));
+                buildversion = (int)(rsp[PATCH_ROM_BUILD_VER_OFFSET + 1] << 8 |
+                                       rsp[PATCH_ROM_BUILD_VER_OFFSET] );
+                ALOGI("\t Current ROM Build Version\t: 0x%04x", buildversion);
 
                 /* In case rome 1.0/1.1, there is no SOC ID version available */
                 if (paramlen - 10)
                 {
-                    ALOGI("\t Current SOC Version\t\t: 0x%08x", soc_id =
-                        (unsigned int)(rsp[PATCH_SOC_VER_OFFSET +3] << 24 |
-                                                rsp[PATCH_SOC_VER_OFFSET+2] << 16 |
-                                                rsp[PATCH_SOC_VER_OFFSET+1] << 8 |
-                                                rsp[PATCH_SOC_VER_OFFSET]  ));
+                    soc_id = (unsigned int)(rsp[PATCH_SOC_VER_OFFSET +3] << 24 |
+                                     rsp[PATCH_SOC_VER_OFFSET+2] << 16 |
+                                     rsp[PATCH_SOC_VER_OFFSET+1] << 8 |
+                                     rsp[PATCH_SOC_VER_OFFSET]  );
+                    ALOGI("\t Current SOC Version\t\t: 0x%08x", soc_id);
                 }
 
                 if (NULL != (btversionfile = fopen(BT_VERSION_FILEPATH, "wb"))) {
